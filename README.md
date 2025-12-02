@@ -1,6 +1,6 @@
 # Advent of Code 2025
 
-Rusty edition.
+Rusty and over-engineered edition.
 
 ## Running
 
