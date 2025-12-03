@@ -4,7 +4,7 @@ use color_eyre::{
     Result,
     eyre::{Error, eyre},
 };
-use tracing::{debug, info, instrument};
+use tracing::{debug, instrument};
 
 pub const INPUT: &str = include_str!("input/input.txt");
 
@@ -96,18 +96,6 @@ pub fn part2(input: &str) -> Result<i32> {
         }
     }
     Ok(visited_zero_count)
-}
-
-pub fn solve() -> Result<()> {
-    info!("Day 1");
-    {
-        let _span = tracing::info_span!("day01").entered();
-        let p1 = part1(INPUT)?;
-        info!("Part 1: {}", p1);
-        let p2 = part2(INPUT)?;
-        info!("Part 2: {}", p2);
-    }
-    Ok(())
 }
 
 #[cfg(test)]

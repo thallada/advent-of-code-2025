@@ -5,7 +5,7 @@ use color_eyre::{
     eyre::{Error, OptionExt, eyre},
 };
 use itertools::Itertools;
-use tracing::{debug, debug_span, info, info_span, instrument};
+use tracing::{debug, debug_span, instrument};
 
 pub const INPUT: &str = include_str!("input/input.txt");
 
@@ -139,18 +139,6 @@ pub fn part2(input: &str) -> Result<i64> {
         total_invalid += range.invalid_ids2()?.iter().sum::<i64>();
     }
     Ok(total_invalid)
-}
-
-pub fn solve() -> Result<()> {
-    info!("Day 2");
-    {
-        let _span = info_span!("day02").entered();
-        let p1 = part1(INPUT)?;
-        info!("Part 1: {}", p1);
-        let p2 = part2(INPUT)?;
-        info!("Part 2: {}", p2);
-    }
-    Ok(())
 }
 
 #[cfg(test)]
