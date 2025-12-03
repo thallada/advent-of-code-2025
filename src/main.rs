@@ -1,7 +1,7 @@
+mod days;
 mod runner;
 
-pub mod day01;
-pub mod day02;
+use aoc::{day01, day02};
 
 use clap::Parser;
 use color_eyre::Result;
@@ -24,10 +24,7 @@ struct Args {
     part: Option<u8>,
 }
 
-runner::days! {
-    1 => day01,
-    2 => day02,
-}
+all_days!(runner::days);
 
 fn main() -> Result<()> {
     color_eyre::install()?;
