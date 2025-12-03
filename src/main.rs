@@ -1,4 +1,5 @@
 pub mod day01;
+pub mod day02;
 
 use color_eyre::Result;
 use tracing::info;
@@ -24,6 +25,7 @@ fn main() -> Result<()> {
     {
         let _span = tracing::info_span!("aoc").entered();
         day01::solve()?;
+        day02::solve()?;
     }
     Ok(())
 }

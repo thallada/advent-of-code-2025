@@ -18,7 +18,7 @@ To run the tests against included test input files: `RUST_LOG=debug cargo test -
 
 Because this is over-engineered, I've included benchmarks for each day's solution. Because, why not?
 
-To run benchmarks: `cargo bench`.
+To run benchmarks: `cargo bench`. Or a specific day and/or part: `cargo bench -- "day02 part1"`.
 
 ### Results
 
@@ -29,3 +29,4 @@ Timings are given as: [lower-bound **best-estimate** upper-bound]
 | Day | Part 1 | Part 2 |
 |-----|--------|--------|
 | 01  | [101.34 µs **101.95 µs** 102.61 µs] | [105.90 µs **106.40 µs** 106.95 µs] |
+| 02  | [165.59 ms **166.60 ms** 167.65 ms] | [184.17 ms **185.25 ms** 186.42 ms] |
