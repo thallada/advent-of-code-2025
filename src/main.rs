@@ -1,8 +1,7 @@
 mod days;
 mod runner;
 
-use aoc::{day01, day02};
-
+use aoc::*;
 use clap::Parser;
 use color_eyre::Result;
 use tracing::info;
