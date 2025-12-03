@@ -6,7 +6,7 @@ use color_eyre::{
 };
 use tracing::{debug, info, instrument};
 
-const INPUT: &str = include_str!("input/input.txt");
+pub const INPUT: &str = include_str!("input/input.txt");
 
 const LOCK_SIZE: i32 = 100;
 const LOCK_STARTING_POSITION: i32 = 50;
@@ -30,7 +30,7 @@ impl FromStr for Direction {
 }
 
 #[instrument(skip(input))]
-fn part1(input: &str) -> Result<i32> {
+pub fn part1(input: &str) -> Result<i32> {
     let mut dial = LOCK_STARTING_POSITION;
     let mut visited_zero_count = 0;
     for line in input.trim().split('\n') {
@@ -57,7 +57,7 @@ fn part1(input: &str) -> Result<i32> {
 }
 
 #[instrument(skip(input))]
-fn part2(input: &str) -> Result<i32> {
+pub fn part2(input: &str) -> Result<i32> {
     let mut dial = LOCK_STARTING_POSITION;
     let mut visited_zero_count = 0;
     for line in input.trim().split('\n') {

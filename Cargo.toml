@@ -10,8 +10,21 @@ tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
-test-log = {version = "0.2", default-features = false, features = ["trace"]}
+criterion = "0.5.1"
+test-log = { version = "0.2", default-features = false, features = ["trace"] }
 
 # Improve perf on debug builds: https://docs.rs/color-eyre/latest/color_eyre/#improving-perf-on-debug-builds
 [profile.dev.package.backtrace]
 opt-level = 3
+
+[lib]
+name = "aoc"
+path = "src/lib.rs"
+
+[[bin]]
+name = "aoc_bin"
+path = "src/main.rs"
+
+[[bench]]
+name = "aoc"
+harness = false
