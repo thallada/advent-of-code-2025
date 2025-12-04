@@ -6,7 +6,7 @@ pub const INPUT: &str = include_str!("input/input.txt");
 #[derive(Debug, Clone, Copy)]
 struct Battery {
     column: usize,
-    joltage: u32,
+    joltage: u8,
 }
 
 impl Default for Battery {
@@ -33,7 +33,7 @@ fn largest_output_joltage<const N: usize>(input: &str) -> Result<u64> {
                     line,
                     " ".repeat(column)
                 )
-            })?;
+            })? as u8;
             let min = N.saturating_sub(line_len - column);
             for i in min..N {
                 if joltage > batteries[i].joltage {
