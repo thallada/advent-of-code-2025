@@ -44,10 +44,11 @@ fn largest_output_joltage<const N: usize>(input: &str) -> Result<u64> {
                 }
             }
         }
-        debug!(line, batteries = ?batteries.map(|b| b.joltage));
-        output_joltage += batteries
+        let line_joltage = batteries
             .iter()
             .fold(0u64, |acc, &b| acc * 10 + b.joltage as u64);
+        debug!(line, line_joltage);
+        output_joltage += line_joltage;
     }
     Ok(output_joltage)
 }
