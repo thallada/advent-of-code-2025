@@ -7,6 +7,7 @@ macro_rules! all_days {
         $macro_name! {
             1 => day01,
             2 => day02,
+            3 => day03,
         }
     };
 }
