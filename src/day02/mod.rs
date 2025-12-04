@@ -2,9 +2,9 @@ use std::{fmt::Display, str::FromStr};
 
 use color_eyre::{
     Result,
-    eyre::{Error, OptionExt, eyre},
+    eyre::{Error, eyre},
 };
-use itertools::Itertools;
+use rayon::prelude::*;
 use tracing::{debug, debug_span, instrument};
 
 pub const INPUT: &str = include_str!("input/input.txt");
@@ -50,54 +50,34 @@ impl Iterator for ProductRange {
     }
 }
 
-fn is_valid_product_id(id: i64) -> Result<bool> {
-    let digits: Vec<u32> = id
-        .to_string()
-        .chars()
-        .map(|c| {
-            c.to_digit(10)
-                .ok_or_eyre("Invalid product id: contains a non-decimal digit")
-        })
-        .collect::<Result<Vec<u32>>>()?;
-    if digits.len() % 2 != 0 {
-        return Ok(true);
-    }
-    Ok(digits[..digits.len() / 2] != digits[digits.len() / 2..])
-}
-
-fn is_valid_product_id2(id: i64) -> Result<bool> {
-    let digits: Vec<u32> = id
-        .to_string()
-        .chars()
-        .map(|c| {
-            c.to_digit(10)
-                .ok_or_eyre("Invalid product id: contains a non-decimal digit")
-        })
-        .collect::<Result<Vec<u32>>>()?;
-    let mut chunk_size = digits.len() / 2;
-    loop {
-        if chunk_size == 0 {
-            break;
-        }
-        if digits
-            .chunks(chunk_size)
-            .tuple_windows()
-            .all(|(a, b)| a == b)
-        {
-            return Ok(false);
-        }
-        chunk_size -= 1;
-    }
-    Ok(true)
-}
-
 impl ProductRange {
     fn invalid_ids(self) -> Result<Vec<i64>> {
-        let mut invalid_ids = vec![];
+        let start = *self.0.start();
+        let end = *self.0.end();
 
-        for id in self {
-            if !is_valid_product_id(id)? {
-                invalid_ids.push(id);
+        let mut invalid_ids = Vec::new();
+
+        // Determine digit ranges we need to check
+        let start_digits = if start == 0 { 1 } else { start.ilog10() + 1 };
+        let end_digits = if end == 0 { 1 } else { end.ilog10() + 1 };
+
+        for num_digits in start_digits..=end_digits {
+            // Skip odd digit counts - they're all valid
+            if num_digits % 2 != 0 {
+                continue;
+            }
+
+            let half_digits = num_digits / 2;
+            let half_min = 10_i64.pow(half_digits - 1);
+            let half_max = 10_i64.pow(half_digits) - 1;
+            let multiplier = 10_i64.pow(half_digits) + 1; // Pre-calculate: half * multiplier = AABB pattern
+
+            // Generate all patterns where first half == second half
+            for half in half_min..=half_max {
+                let id = half * multiplier;
+                if id >= start && id <= end {
+                    invalid_ids.push(id);
+                }
             }
         }
 
@@ -106,13 +86,50 @@ impl ProductRange {
     }
 
     fn invalid_ids2(self) -> Result<Vec<i64>> {
-        let mut invalid_ids = vec![];
+        let start = *self.0.start();
+        let end = *self.0.end();
 
-        for id in self {
-            if !is_valid_product_id2(id)? {
-                invalid_ids.push(id);
+        let mut invalid_ids = std::collections::HashSet::new();
+
+        // Determine digit ranges we need to check
+        let start_digits = if start == 0 { 1 } else { start.ilog10() + 1 };
+        let end_digits = if end == 0 { 1 } else { end.ilog10() + 1 };
+
+        for num_digits in start_digits..=end_digits {
+            // Try all possible chunk sizes that divide evenly
+            for chunk_size in 1..=num_digits / 2 {
+                if num_digits % chunk_size != 0 {
+                    continue;
+                }
+
+                let num_chunks = num_digits / chunk_size;
+                if num_chunks < 2 {
+                    continue;
+                }
+
+                // Generate all possible chunk patterns
+                let chunk_min = 10_i64.pow(chunk_size - 1);
+                let chunk_max = 10_i64.pow(chunk_size) - 1;
+                let chunk_power = 10_i64.pow(chunk_size);
+
+                // Calculate multiplier for repeating pattern
+                // For ABCABC: chunk * (10^6 + 10^3 + 1) = chunk * 1001001
+                let mut multiplier = 0_i64;
+                for i in 0..num_chunks {
+                    multiplier += chunk_power.pow(i);
+                }
+
+                for chunk in chunk_min..=chunk_max {
+                    let id = chunk * multiplier;
+
+                    if id >= start && id <= end {
+                        invalid_ids.insert(id);
+                    }
+                }
             }
         }
+
+        let invalid_ids: Vec<i64> = invalid_ids.into_iter().collect();
 
         debug!("Invalid IDs: {:?}", &invalid_ids);
         Ok(invalid_ids)
@@ -121,24 +138,32 @@ impl ProductRange {
 
 #[instrument(skip(input))]
 pub fn part1(input: &str) -> Result<i64> {
-    let mut total_invalid = 0;
-    for range in input.trim().split(',') {
-        let _span = debug_span!("range", range = %range).entered();
-        let range: ProductRange = range.parse()?;
-        total_invalid += range.invalid_ids()?.iter().sum::<i64>();
-    }
-    Ok(total_invalid)
+    input
+        .trim()
+        .split(',')
+        .collect::<Vec<_>>()
+        .into_par_iter()
+        .map(|range| {
+            let _span = debug_span!("range", range = %range).entered();
+            let range: ProductRange = range.parse()?;
+            Ok(range.invalid_ids()?.iter().sum::<i64>())
+        })
+        .sum()
 }
 
 #[instrument(skip(input))]
 pub fn part2(input: &str) -> Result<i64> {
-    let mut total_invalid = 0;
-    for range in input.trim().split(',') {
-        let _span = debug_span!("range", range = %range).entered();
-        let range: ProductRange = range.parse()?;
-        total_invalid += range.invalid_ids2()?.iter().sum::<i64>();
-    }
-    Ok(total_invalid)
+    input
+        .trim()
+        .split(',')
+        .collect::<Vec<_>>()
+        .into_par_iter()
+        .map(|range| {
+            let _span = debug_span!("range", range = %range).entered();
+            let range: ProductRange = range.parse()?;
+            Ok(range.invalid_ids2()?.iter().sum::<i64>())
+        })
+        .sum()
 }
 
 #[cfg(test)]

@@ -7,12 +7,13 @@ edition = "2024"
 clap = { version = "4.5", features = ["derive"] }
 color-eyre = "0.6"
 itertools = "0.14"
+rayon = "1.11"
 tracing = "0.1"
 tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
-criterion = "0.5.1"
+criterion = "0.8.0"
 test-log = { version = "0.2", default-features = false, features = ["trace"] }
 
 # Improve perf on debug builds: https://docs.rs/color-eyre/latest/color_eyre/#improving-perf-on-debug-builds
