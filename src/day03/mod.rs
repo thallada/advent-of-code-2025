@@ -1,4 +1,4 @@
-use color_eyre::{Result, eyre::eyre};
+use color_eyre::Result;
 use tracing::{debug, instrument};
 
 pub const INPUT: &str = include_str!("input/input.txt");
@@ -20,20 +20,10 @@ impl Default for Battery {
 
 fn largest_output_joltage<const N: usize>(input: &str) -> Result<u64> {
     let mut output_joltage: u64 = 0;
-    for (line_num, line) in input.trim().split('\n').enumerate() {
+    for line in input.trim().split('\n') {
         let mut batteries: [Battery; N] = [Battery::default(); N];
         let line_len = line.len();
-        for (column, c) in line.bytes().enumerate() {
-            let joltage = (c as char).to_digit(10).ok_or_else(|| {
-                eyre!(
-                    "Invalid character '{}' at line {}, column {}:\n  {}\n  {}^",
-                    c as char,
-                    line_num + 1,
-                    column + 1,
-                    line,
-                    " ".repeat(column)
-                )
-            })? as u8;
+        for (column, joltage) in line.bytes().map(|c| c - b'0').enumerate() {
             let min = N.saturating_sub(line_len - column);
             for i in min..N {
                 if joltage > batteries[i].joltage {
@@ -69,18 +59,6 @@ mod tests {
     use test_log::test;
 
     const TEST_INPUT1: &str = include_str!("input/test1.txt");
-
-    #[test]
-    fn test_invalid_character_error() {
-        let input = "1234\n5678\n1234x678\n9012";
-        let result = part1(input);
-        assert!(result.is_err());
-        let error_msg = result.unwrap_err().to_string();
-        assert_eq!(
-            error_msg,
-            "Invalid character 'x' at line 3, column 5:\n  1234x678\n      ^"
-        );
-    }
 
     #[test]
     fn test_part1() {
