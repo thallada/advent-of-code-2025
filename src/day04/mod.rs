@@ -8,6 +8,17 @@ use tracing::{debug, instrument};
 
 pub const INPUT: &str = include_str!("input/input.txt");
 
+const ADJACENT_DELTAS: [(isize, isize); 8] = [
+    (-1, -1),
+    (-1, 0),
+    (-1, 1),
+    (0, -1),
+    (0, 1),
+    (1, -1),
+    (1, 0),
+    (1, 1),
+];
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Cell {
     Empty,
@@ -77,14 +88,6 @@ impl<const R: usize, const C: usize> Display for Grid<R, C> {
 }
 
 impl<const R: usize, const C: usize> Grid<R, C> {
-    fn get_cell(&self, row: isize, col: isize) -> Option<Cell> {
-        if row >= 0 && col >= 0 && (row as usize) < R && (col as usize) < C {
-            Some(self.cells[row as usize][col as usize])
-        } else {
-            None
-        }
-    }
-
     fn count_accessible_papers(&mut self, replace_with: Cell) -> usize {
         let mut count = 0;
         for row in 0..R {
@@ -93,15 +96,16 @@ impl<const R: usize, const C: usize> Grid<R, C> {
                     continue;
                 }
                 let mut adjacent_papers = 0;
-                for dr in -1..=1 {
-                    for dc in -1..=1 {
-                        if dr == 0 && dc == 0 {
-                            continue;
-                        }
-                        let adjacent = self
-                            .get_cell(row as isize + dr, col as isize + dc)
-                            .unwrap_or(Cell::Empty);
-                        if adjacent == Cell::Paper || adjacent == Cell::AccessiblePaper {
+                for &(dr, dc) in &ADJACENT_DELTAS {
+                    let adj_row = row as isize + dr;
+                    let adj_col = col as isize + dc;
+                    if adj_row >= 0
+                        && adj_col >= 0
+                        && (adj_row as usize) < R
+                        && (adj_col as usize) < C
+                    {
+                        let adjacent = self.cells[adj_row as usize][adj_col as usize];
+                        if matches!(adjacent, Cell::Paper | Cell::AccessiblePaper) {
                             adjacent_papers += 1;
                         }
                     }
