@@ -26,13 +26,13 @@ To run benchmarks: `cargo bench`. Or a specific day and/or part: `cargo bench --
 
 ### Results
 
-These were all run on my personal machine, an AMD Ryzen 9 3900X 12-Core Processor with 32 GB RAM, on Linux (WSL).
+These were all run on my personal machine, an AMD Ryzen 9 3900X 12-Core Processor with 32 GB RAM, on Linux (WSL), with nightly rust.
 
 Timings are given as: [lower-bound **best-estimate** upper-bound]
 
 | Day | Part 1 | Part 2 |
 |-----|--------|--------|
-| 01  | [101.34 µs **101.95 µs** 102.61 µs] | [105.90 µs **106.40 µs** 106.95 µs] |
-| 02  | [2.0990 ms **2.1113 ms** 2.1236 ms] | [2.0954 ms **2.1055 ms** 2.1157 ms] |
-| 03  | [38.717 µs **39.002 µs** 39.311 µs] | [175.35 µs **176.59 µs** 177.92 µs] |
-| 04  | [147.02 µs **147.75 µs** 148.53 µs] | [1.5579 ms **1.5737 ms** 1.5900 ms] |
+| 01  | [79.998 µs **80.349 µs** 80.721 µs] | [76.289 µs **76.616 µs** 76.950 µs] |
+| 02  | [2.0386 ms **2.0483 ms** 2.0584 ms] | [2.0823 ms **2.0918 ms** 2.1015 ms] |
+| 03  | [45.711 µs **45.937 µs** 46.177 µs] | [267.18 µs **267.95 µs** 268.75 µs] |
+| 04  | [143.40 µs **144.00 µs** 144.73 µs] | [1.6165 ms **1.6258 ms** 1.6355 ms] |

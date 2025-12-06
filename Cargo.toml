@@ -20,6 +20,12 @@ test-log = { version = "0.2", default-features = false, features = ["trace"] }
 [profile.dev.package.backtrace]
 opt-level = 3
 
+# Gotta go fast
+[profile.release]
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+
 [lib]
 name = "aoc"
 path = "src/lib.rs"
