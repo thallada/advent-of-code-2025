@@ -36,3 +36,13 @@ Timings are given as: [lower-bound **best-estimate** upper-bound]
 | 02  | [2.0386 ms **2.0483 ms** 2.0584 ms] | [2.0823 ms **2.0918 ms** 2.1015 ms] |
 | 03  | [45.711 µs **45.937 µs** 46.177 µs] | [267.18 µs **267.95 µs** 268.75 µs] |
 | 04  | [143.40 µs **144.00 µs** 144.73 µs] | [1.6165 ms **1.6258 ms** 1.6355 ms] |
+
+## Profiling
+
+To aid in increasing performance, the `pprof` crate can be used to generate flamegraphs off of the benchmarks.
+
+To run profiling across all benchmarks: `cargo bench --bench aoc -- --profile-time 10`.
+
+To run profile the benchmark for a specific day and/or part: `cargo bench --bench aoc -- --profile-time 30 "day01 part1"`.
+
+The flamegraphs will be generated in `target/criterion/<benchmark_name>/profile/flamegraph.svg`.

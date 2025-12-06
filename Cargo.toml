@@ -13,7 +13,8 @@ tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
-criterion = "0.8.0"
+criterion = "0.5"
+pprof = { version = "0.15" , features = ["flamegraph", "criterion"] }
 test-log = { version = "0.2", default-features = false, features = ["trace"] }
 
 # Improve perf on debug builds: https://docs.rs/color-eyre/latest/color_eyre/#improving-perf-on-debug-builds
@@ -25,6 +26,7 @@ opt-level = 3
 codegen-units = 1
 lto = "fat"
 panic = "abort"
+debug = false # set true for profiling
 
 [lib]
 name = "aoc"
