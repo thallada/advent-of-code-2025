@@ -8,7 +8,7 @@ clap = { version = "4.5", features = ["derive"] }
 color-eyre = "0.6"
 itertools = "0.14"
 rayon = "1.11"
-tracing = "0.1"
+tracing = { version = "0.1", features = ["release_max_level_info"] }
 tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
