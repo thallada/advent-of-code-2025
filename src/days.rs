@@ -11,6 +11,7 @@ macro_rules! all_days {
             4 => day04,
             5 => day05,
             6 => day06,
+            7 => day07,
         }
     };
 }
